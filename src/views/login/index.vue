@@ -19,6 +19,8 @@
 </template>
 
 <script>
+import { login } from '@/api/user'
+import { mapMutations } from 'vuex'
 export default {
   // 定义一个表单数据，和vant组件绑定
   data () {
@@ -36,6 +38,8 @@ export default {
     }
   },
   methods: {
+    // 可以导入需要的方法  直接把updateUser方法映射到当前的methods方法中
+    ...mapMutations(['updateUser']),
     checkMobile () {
       // 获取手机号 判断 是否为空 满足手机号码格式
       // !this.loginFrom.mobile表示为空
@@ -66,11 +70,24 @@ export default {
       this.errorMessage.code = ''
       return true
     },
-    login () {
+    async login () {
       //  校验手机号和验证码
       if (this.checkMobile() && this.checkCode()) {
         // 如果两个检查都是true 就表示通过 了校验
-        console.log('校验通过')
+        // 校验通过之后 要去调接口 看看用户名和密码是否正确
+        try {
+          const result = await login(this.loginForm)
+          // 拿到token之后 应该把token设置vuex中的state
+          // 要去修改vuex中的state必须通过mutations
+          this.updateUser({ user: result })
+
+          const { redirectUrl } = this.$route.query
+          // redirectUrl有值的话跳到该地址  没值的话跳到主页
+          // 短路表达式
+          this.$router.push(redirectUrl || '/')
+        } catch (error) {
+          this.$notify({ message: '用户名或者密码错误', duration: 800 })
+        }
       }
     }
   }

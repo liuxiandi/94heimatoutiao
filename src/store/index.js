@@ -9,7 +9,7 @@ export default new Vuex.Store({
     user: auth.getUser()
   },
   mutations: {
-    updataUser (state, payload) {
+    updateUser (state, payload) {
       state.user = payload.user
       auth.setUser(payload.user)
     },
