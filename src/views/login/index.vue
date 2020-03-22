@@ -72,7 +72,9 @@ export default {
     },
     async login () {
       //  校验手机号和验证码
-      if (this.checkMobile() && this.checkCode()) {
+      const validateMobile = this.checkMobile()
+      const validateCode = this.checkCode()
+      if (validateMobile && validateCode) {
         // 如果两个检查都是true 就表示通过 了校验
         // 校验通过之后 要去调接口 看看用户名和密码是否正确
         try {
@@ -86,7 +88,8 @@ export default {
           // 短路表达式
           this.$router.push(redirectUrl || '/')
         } catch (error) {
-          this.$notify({ message: '用户名或者密码错误', duration: 800 })
+          // this.$notify({ message: '用户名或者密码错误', duration: 800 })
+          this.$gnotify({ message: '用户名或者密码错误' })
         }
       }
     }
