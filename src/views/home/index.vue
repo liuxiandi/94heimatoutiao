@@ -3,11 +3,12 @@
     <van-tabs>
       <!-- 内部放置子标签 title值为当前显示的内容 -->
       <van-tab :title="`标签${item}`" v-for="item in 10" :key="item">
-        <div class='scroll-wrapper'>
+        <!-- <div class='scroll-wrapper'>
           <van-cell-group>
             <van-cell title="标题" value="内容" :key="item" v-for="item in 20"></van-cell>
-          </van-cell-group>
-        </div>
+          </van-cell-group> -->
+         <ArticleList></ArticleList>
+        <!-- </div> -->
       </van-tab>
     </van-tabs>
 
@@ -20,10 +21,12 @@
 
 <script>
 // @ is an alias to /src
-
+import ArticleList from './components/article-list'
 export default {
   name: 'Home',
-  components: {}
+  components: {
+    ArticleList
+  }
 }
 </script>
 
