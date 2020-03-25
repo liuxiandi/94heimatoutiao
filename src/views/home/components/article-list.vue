@@ -45,8 +45,24 @@ export default {
       finished: false,
       articles: [],
       successText: '',
-      downLoading: false
+      downLoading: false,
+      timestamp: null
     }
+  },
+  // props传值 props:['属性名']来接受属性
+  // props也可以跟一个对象
+  // props 对象形式 可以约束传入的值 必填 传值类型
+  props: {
+    // key(props属性名)：value（对象 配置）
+    channel_id: {
+      // 必填项 此属性的含义 true要求该props必须传
+      required: true,
+      // 表示要传入的prop属性的类型
+      type: Number,
+      // 默认值的意思 假如你没传入prop属性 默认值就会被采用
+      default: null
+    }
+
   },
   methods: {
     onLoad () {
