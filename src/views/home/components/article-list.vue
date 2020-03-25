@@ -3,15 +3,35 @@
   <!-- van-list 可以帮助我们实现上拉加载  需要一些变量 -->
   <!-- 这里放置div的目的是形成滚动条，后期我们要做阅读记忆 -->
   <div class="scroll-wrapper">
-     <van-pull-refresh v-model="downLoading" @refresh="onRefresh" :success-text="successText">
+    <van-pull-refresh v-model="downLoading" @refresh="onRefresh" :success-text="successText">
       <van-list finished-text="没有了" v-model="upLoading" :finished="finished" @load="onLoad">
         <!-- 循环内容 -->
         <van-cell-group>
-          <van-cell v-for="item in articles" :key="item" title="美股又熔断了" :value="'天台排队'+item"></van-cell>
+          <van-cell v-for="item in articles" :key="item">
+            <div class="article_item">
+              <h3 class="van-ellipsis">PullRefresh下拉刷新PullRefresh下拉刷新下拉刷新下拉刷新</h3>
+              <div class="img_box">
+                <van-image class="w33" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
+                <van-image class="w33" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
+                <van-image class="w33" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
+              </div>
+               <!-- <div class="img_box">
+                <van-image class="w100" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
+              </div> -->
+              <div class="info_box">
+                <span>你像一阵风</span>
+                <span>8评论</span>
+                <span>10分钟前</span>
+                <span class="close">
+                  <van-icon name="cross"></van-icon>
+                </span>
+              </div>
+            </div>
+
+          </van-cell>
         </van-cell-group>
       </van-list>
     </van-pull-refresh>
-
   </div>
 </template>
 
@@ -34,7 +54,10 @@ export default {
       if (this.articles.length > 50) {
         this.finished = true
       } else {
-        const arr = Array.from(Array(15), (value, index) => this.articles.length + index + 1)
+        const arr = Array.from(
+          Array(15),
+          (value, index) => this.articles.length + index + 1
+        )
         //   上拉加载 不是覆盖之前的数据 应该把数据追加到数组的队尾
         this.articles.push(...arr)
         // 添加完数据 需要手动的关掉 loading
@@ -42,16 +65,19 @@ export default {
       }
       // 下面这么写 依然不能关掉加载状态  因为关掉之后 检测机制 高度还是不够 还是会开启
       // 有数据 应该把数据加到list中
-    //   // 如果想关掉
-    //   setTimeout(() => {
-    //     // 表示数据已经全部加载完毕 没有数据了
-    //     this.finished = true
-    //   }, 1000)
+      //   // 如果想关掉
+      //   setTimeout(() => {
+      //     // 表示数据已经全部加载完毕 没有数据了
+      //     this.finished = true
+      //   }, 1000)
     },
     onRefresh () {
       setTimeout(() => {
-      // 下拉刷新 表示要读取最新的数据 而且最新的数要添加到数据头部
-        const arr = Array.from(Array(2), (value, index) => '追加' + (index + 1))
+        // 下拉刷新 表示要读取最新的数据 而且最新的数要添加到数据头部
+        const arr = Array.from(
+          Array(2),
+          (value, index) => '追加' + (index + 1)
+        )
         // 数组添加到头部
         this.articles.unshift(...arr)
         // 手动关闭正在加载的状态
@@ -59,12 +85,49 @@ export default {
         this.successText = `跟新了${arr.length}条数据`
       }, 1000)
     }
-
   }
-
 }
 </script>
 
-<style>
-
+<style lang="less">
+.article_item {
+  h3 {
+    font-weight: normal;
+    line-height: 2;
+  }
+  .img_box {
+    display: flex;
+    justify-content: space-between;
+    .w33 {
+      width: 33%;
+      height: 90px;
+    }
+    .w100 {
+      width: 100%;
+      height: 180px;
+    }
+  }
+  .info_box {
+    color: #999;
+    line-height: 2;
+    position: relative;
+    font-size: 12px;
+    span {
+      padding-right: 10px;
+      &.close {
+        border: 1px solid #ddd;
+        border-radius: 2px;
+        line-height: 15px;
+        height: 12px;
+        width: 16px;
+        text-align: center;
+        padding-right: 0;
+        font-size: 8px;
+        position: absolute;
+        right: 0;
+        top: 7px;
+      }
+    }
+  }
+}
 </style>
