@@ -7,7 +7,7 @@
       <van-list finished-text="没有了" v-model="upLoading" :finished="finished" @load="onLoad">
         <!-- 循环内容 -->
         <van-cell-group>
-          <van-cell v-for="item in articles" :key="item">
+          <van-cell v-for="item in articles" :key="item.art_id">
             <div class="article_item">
               <h3 class="van-ellipsis">PullRefresh下拉刷新PullRefresh下拉刷新下拉刷新下拉刷新</h3>
               <div class="img_box">
@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import { getArticle } from '@/api/article'
 export default {
   data () {
     return {
@@ -65,20 +66,20 @@ export default {
 
   },
   methods: {
-    onLoad () {
-      console.log('开始加载数据')
-      if (this.articles.length > 50) {
-        this.finished = true
-      } else {
-        const arr = Array.from(
-          Array(15),
-          (value, index) => this.articles.length + index + 1
-        )
-        //   上拉加载 不是覆盖之前的数据 应该把数据追加到数组的队尾
-        this.articles.push(...arr)
-        // 添加完数据 需要手动的关掉 loading
-        this.upLoading = false
-      }
+    async onLoad () {
+      console.log('开始加载文章列表数据')
+      // if (this.articles.length > 50) {
+      //   this.finished = true
+      // } else {
+      //   const arr = Array.from(
+      //     Array(15),
+      //     (value, index) => this.articles.length + index + 1
+      //   )
+      //   //   上拉加载 不是覆盖之前的数据 应该把数据追加到数组的队尾
+      //   this.articles.push(...arr)
+      //   // 添加完数据 需要手动的关掉 loading
+      //   this.upLoading = false
+      // }
       // 下面这么写 依然不能关掉加载状态  因为关掉之后 检测机制 高度还是不够 还是会开启
       // 有数据 应该把数据加到list中
       //   // 如果想关掉
@@ -86,6 +87,19 @@ export default {
       //     // 表示数据已经全部加载完毕 没有数据了
       //     this.finished = true
       //   }, 1000)
+
+      // this.timestamp || Date.now() 如果有历史时间戳 用历史时间戳 否则用当前的时间戳
+      // this.channel_id 指的是当前的频道id
+      const data = await getArticle({ channel_id: this.channel_id, timestamp: this.timestamp || Date.now() })
+      // 将数据追加到队尾
+      this.articles.push(data.results)
+      // 关闭加载状态
+      this.upLoading = false
+      if (data.pre_timestamp) {
+        this.timestamp = data.pre_timestamp
+      } else {
+        this.finished = true
+      }
     },
     onRefresh () {
       setTimeout(() => {
