@@ -7,21 +7,22 @@
       <van-list finished-text="没有了" v-model="upLoading" :finished="finished" @load="onLoad">
         <!-- 循环内容 -->
         <van-cell-group>
-          <van-cell v-for="item in articles" :key="item.art_id">
+          <!-- 此时的item.art_id是一个大数字对象 v-for 的key需要用字符串或者数字带理 -->
+          <van-cell v-for="item in articles" :key="item.art_id.toString()">
             <div class="article_item">
-              <h3 class="van-ellipsis">PullRefresh下拉刷新PullRefresh下拉刷新下拉刷新下拉刷新</h3>
-              <div class="img_box">
-                <van-image class="w33" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
-                <van-image class="w33" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
-                <van-image class="w33" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
+              <h3 class="van-ellipsis">{{ item.title }}</h3>
+              <div class="img_box" v-if="item.cover.type === 3">
+                <van-image class="w33" fit="cover" :src="item.cover.images[0]" />
+                <van-image class="w33" fit="cover" :src="item.cover.images[1]" />
+                <van-image class="w33" fit="cover" :src="item.cover.images[2]" />
               </div>
-               <!-- <div class="img_box">
-                <van-image class="w100" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
-              </div> -->
+               <div class="img_box" v-if="item.cover.type === 1">
+                <van-image class="w100" fit="cover" src="item.cover.images[0]" />
+              </div>
               <div class="info_box">
-                <span>你像一阵风</span>
-                <span>8评论</span>
-                <span>10分钟前</span>
+                <span>{{ item.aut_name }}</span>
+                <span>{{ item.comm_count }}评论</span>
+                <span>{{ item.pubdate }}</span>
                 <span class="close">
                   <van-icon name="cross"></van-icon>
                 </span>
@@ -92,7 +93,7 @@ export default {
       // this.channel_id 指的是当前的频道id
       const data = await getArticle({ channel_id: this.channel_id, timestamp: this.timestamp || Date.now() })
       // 将数据追加到队尾
-      this.articles.push(data.results)
+      this.articles.push(...data.results)
       // 关闭加载状态
       this.upLoading = false
       if (data.pre_timestamp) {
