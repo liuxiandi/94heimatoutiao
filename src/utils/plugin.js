@@ -12,6 +12,7 @@ export default {
     // 定义一个原型属性$sleep 所有组件都有了这个属性
     Vue.prototype.$sleep = sleep
     Vue.filter('relTime', relTime)
+    // 要用到过滤器 （全局过滤器  局部过滤器）vue.filter(名称，函数)
   }
 }
 function sleep (time = 500) {
