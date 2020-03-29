@@ -91,6 +91,7 @@ export default {
 
       // this.timestamp || Date.now() 如果有历史时间戳 用历史时间戳 否则用当前的时间戳
       // this.channel_id 指的是当前的频道id
+      await this.$sleep()
       const data = await getArticle({ channel_id: this.channel_id, timestamp: this.timestamp || Date.now() })
       // 将数据追加到队尾
       this.articles.push(...data.results)
@@ -104,6 +105,7 @@ export default {
     },
     async onRefresh () {
       // 下拉刷新应该发送最新的时间戳
+      await this.$sleep()
       const data = await getArticle({
         channel_id: this.channel_id,
         timestamp: Date.now()
