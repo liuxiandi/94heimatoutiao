@@ -17,7 +17,7 @@
                 <van-image class="w33" fit="cover" :src="item.cover.images[2]" />
               </div>
                <div class="img_box" v-if="item.cover.type === 1">
-                <van-image class="w100" fit="cover" src="item.cover.images[0]" />
+                <van-image class="w100" fit="cover" :src="item.cover.images[0]" />
               </div>
               <div class="info_box">
                 <span>{{ item.aut_name }}</span>
@@ -102,19 +102,41 @@ export default {
         this.finished = true
       }
     },
-    onRefresh () {
-      setTimeout(() => {
-        // 下拉刷新 表示要读取最新的数据 而且最新的数要添加到数据头部
-        const arr = Array.from(
-          Array(2),
-          (value, index) => '追加' + (index + 1)
-        )
-        // 数组添加到头部
-        this.articles.unshift(...arr)
-        // 手动关闭正在加载的状态
-        this.downLoading = false
-        this.successText = `跟新了${arr.length}条数据`
-      }, 1000)
+    async onRefresh () {
+      // 下拉刷新应该发送最新的时间戳
+      const data = await getArticle({
+        channel_id: this.channel_id,
+        timestamp: Date.now()
+      })
+      // 手动关闭 下拉刷新的状态
+      this.downLoading = false
+      // 需要判断 最新的时间戳能否换来数据 如果能换来数据 把新数据整个替换旧数据 如果不能就告诉大家 暂时没有更新
+      if (data.results.length) {
+        // 如果又返回数据 需要将整个的article替换
+        this.articles = data.results
+        if (data.pre_timestamp) {
+          // 下拉刷新 换来了一波新的数据 里面又有时间戳
+          // 重新唤醒列表 继续上拉加载
+          this.finished = false
+          // 记录；历史时间戳给变量
+          this.timestamp = data.pre_timestamp
+        }
+        this.successText = `更新了${data.results.length}条数据`
+      } else {
+        this.successText = '当前已经是最新了'
+      }
+      // setTimeout(() => {
+      //   // 下拉刷新 表示要读取最新的数据 而且最新的数要添加到数据头部
+      //   const arr = Array.from(
+      //     Array(2),
+      //     (value, index) => '追加' + (index + 1)
+      //   )
+      //   // 数组添加到头部
+      //   this.articles.unshift(...arr)
+      //   // 手动关闭正在加载的状态
+      //   this.downLoading = false
+      //   this.successText = `跟新了${arr.length}条数据`
+      // }, 1000)
     }
   }
 }
