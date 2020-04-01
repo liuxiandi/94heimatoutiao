@@ -24,7 +24,8 @@
                 <span>{{ item.comm_count }}评论</span>
                 <span>{{ item.pubdate | relTime }}</span>
                 <span>{{ item.pubdate }}</span>
-                <span class="close">
+                <!-- 子组件触发一个点击事件 -->
+                <span @click="$emit('showAction')" class="close" v-if="user.token">
                   <van-icon name="cross"></van-icon>
                 </span>
               </div>
@@ -38,8 +39,12 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { getArticle } from '@/api/article'
 export default {
+  computed: {
+    ...mapState(['user'])
+  },
   data () {
     return {
       // 表示是否开启了上拉加载 默认值false

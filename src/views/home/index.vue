@@ -7,7 +7,9 @@
           <van-cell-group>
             <van-cell title="标题" value="内容" :key="item" v-for="item in 20"></van-cell>
           </van-cell-group> -->
-         <ArticleList :channel_id="item.id"></ArticleList>
+
+          <!-- 父组件监听自定义事件，并且弹出层 -->
+         <ArticleList @showAction="openAction" :channel_id="item.id"></ArticleList>
         <!-- </div> -->
       </van-tab>
     </van-tabs>
@@ -15,29 +17,38 @@
     <span class="bar_btn">
       <van-icon name='wap-nav'></van-icon>
     </span>
-
+    <van-popup v-model="showMoreAction" style="width: 80%">
+      <MoreAction> </MoreAction>
+    </van-popup>
     </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import ArticleList from './components/article-list'
+import MoreAction from './components/more-action'
 import { getMyChannels } from '@/api/channels'
 export default {
   name: 'Home',
   components: {
-    ArticleList
+    ArticleList, MoreAction
   },
   data () {
     return {
       // 接受频道数据
-      channels: []
+      channels: [],
+      // 是否显示弹层组件  默认不显示
+      showMoreAction: false
     }
   },
   methods: {
     async getMyChannels () {
       const data = await getMyChannels()
       this.channels = data.channels
+    },
+    // 此方法会在article-list组件触发showAction的时候触发
+    openAction () {
+      this.showMoreAction = true
     }
   },
   created () {
