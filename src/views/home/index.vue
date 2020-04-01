@@ -38,7 +38,8 @@ export default {
       // 接受频道数据
       channels: [],
       // 是否显示弹层组件  默认不显示
-      showMoreAction: false
+      showMoreAction: false,
+      articleId: null
     }
   },
   methods: {
@@ -47,8 +48,11 @@ export default {
       this.channels = data.channels
     },
     // 此方法会在article-list组件触发showAction的时候触发
-    openAction () {
+    openAction (artId) {
+      // 此时应该弹出反弹层
       this.showMoreAction = true
+      // 应该把id给储存起来
+      this.articleId = artId
     }
   },
   created () {

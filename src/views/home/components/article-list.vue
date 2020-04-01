@@ -8,7 +8,7 @@
         <!-- 循环内容 -->
         <van-cell-group>
           <!-- 此时的item.art_id是一个大数字对象 v-for 的key需要用字符串或者数字带理 -->
-          <van-cell v-for="item in articles" :key="item.art_id.toString()">
+          <van-cell v-for="item in article" :key="item.art_id.toString()">
             <div class="article_item">
               <h3 class="van-ellipsis">{{ item.title }}</h3>
               <div class="img_box" v-if="item.cover.type === 3">
@@ -25,7 +25,7 @@
                 <span>{{ item.pubdate | relTime }}</span>
                 <span>{{ item.pubdate }}</span>
                 <!-- 子组件触发一个点击事件 -->
-                <span @click="$emit('showAction')" class="close" v-if="user.token">
+                <span @click="$emit('showAction', item.art_id.toString())" class="close" v-if="user.token">
                   <van-icon name="cross"></van-icon>
                 </span>
               </div>
@@ -51,7 +51,7 @@ export default {
       upLoading: false,
       // 表示是否已经完成所有数据的加载
       finished: false,
-      articles: [],
+      article: [],
       successText: '',
       downLoading: false,
       timestamp: null
@@ -100,7 +100,7 @@ export default {
       await this.$sleep()
       const data = await getArticle({ channel_id: this.channel_id, timestamp: this.timestamp || Date.now() })
       // 将数据追加到队尾
-      this.articles.push(...data.results)
+      this.article.push(...data.results)
       // 关闭加载状态
       this.upLoading = false
       if (data.pre_timestamp) {
@@ -121,7 +121,7 @@ export default {
       // 需要判断 最新的时间戳能否换来数据 如果能换来数据 把新数据整个替换旧数据 如果不能就告诉大家 暂时没有更新
       if (data.results.length) {
         // 如果又返回数据 需要将整个的article替换
-        this.articles = data.results
+        this.article = data.results
         if (data.pre_timestamp) {
           // 下拉刷新 换来了一波新的数据 里面又有时间戳
           // 重新唤醒列表 继续上拉加载
